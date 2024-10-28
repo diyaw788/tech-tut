@@ -1,0 +1,23 @@
+{% extends "layouts/base.html" %} {% block title %} Starting Page {% endblock
+title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<h2>Sign Up</h2>
+<form action="#" method="POST">
+  <div>
+    <label for="first_name">First Name:</label>
+    <input type="text" id="first_name" name="first_name" />
+  </div>
+  <div>
+    <label for="last_name">Last Name:</label>
+    <input type="text" id="last_name" name="last_name"/>
+  </div>
+  <label for="role">Role:</label>
+  <select name="role" id="role">
+    <option value="student">Student</option>
+    <option value="teacher">Teacher</option>
+  </select>
+  <button type="submit">Sign Up</button>
+</form>
+{% endblock content %}

@@ -1,0 +1,100 @@
+{% extends "layouts/base.html" %} {% block title %} SMU - Test {% endblock title
+    %}
+    
+    {% block stylesheets %}{% endblock stylesheets %} 
+    {% block content %}
+    <script>
+      document.addEventListener("DOMContentLoaded", init);
+      function init() {
+        const user = {{ user | tojson }};
+        professorName = user.Name
+    
+        var buttons = document.getElementsByTagName("button");
+        populateCoursesTable(professorName);
+    
+        document.getElementById('searchButton').addEventListener('click', function() {
+            const searchValue = document.getElementById('searchCourse').value;
+            populateCoursesTable(professorName, searchValue);
+          });
+      }
+    
+      function populateCoursesTable(professorName, searchValue = '') {
+        // create the table header here, columns: Name, Evaluation
+        // get all the evaluations that apply to a certain evaluator
+        fetch("/get_courses?professorName=" + professorName + "&searchValue=" + searchValue, {
+          method: "GET",
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("reached here");
+            console.log(data);
+            // Check if data is not empty
+            if (data.length > 0) {
+              const tableBody = document.querySelector("#evaluationsTable tbody");
+              tableBody.innerHTML = "";
+              // iterate through each person to be evaluated and create row
+              data.forEach((course) => {
+                var courseName = course.Course_Name;
+                var courseID = course.CourseID;
+                createRow(courseName, courseID);
+              });
+            } else {
+              console.log("No evaluations found for this evaluator.");
+            }
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    
+      function createRow(courseName, courseID) {
+        // create a new row dynamically with flask syntax that has the corresponding parameter in the corresponding rows
+        const row = document.createElement("tr");
+    
+        const courseIDCell = document.createElement("td");
+        courseIDCell.innerHTML = courseID;
+        row.appendChild(courseIDCell);
+    
+        const courseCell = document.createElement("td");
+        courseCell.innerHTML = courseName;
+        row.appendChild(courseCell);
+    
+        const assignmentCell = document.createElement("td");
+        assignmentCell.innerHTML =
+                "<button type='button' class='btn btn-primary btn-sm' style='background-color: #141b4d; color: white'>Assign Evaluations</button>";
+        row.appendChild(assignmentCell);
+        
+        document.querySelector("#evaluationsTable tbody").appendChild(row);
+      }
+    </script>
+    <div style="align-items: flex-start; margin-top: 30px">
+      <div style="display: flex; align-items: flex-start; margin-left: 130px; flex-direction: column;">
+        <div>
+            <input type="text" id="searchCourse" placeholder="Search by Course ID" style="margin-right: 10px;">
+            <button id="searchButton" class="btn btn-secondary btn-sm">Search</button>
+        </div>
+        <div
+          class="table-responsive"
+          style="height: 400px; display: flex; width: 1250px; overflow-y: auto; flex-direction: column;"
+        >
+          <table id="evaluationsTable" class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th scope="col">Course ID</th>
+                <th scope="col">Course Title</th>
+                <th scope="col">Assign Evaluations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- rows to be added here dynamically -->
+            </tbody>
+          </table>
+          <div>
+            <button class="course-data-btn" onclick="location.href='/upload'">Upload Course Data</button> <!-- New button -->
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    {% endblock content %}
+    

@@ -1,0 +1,31 @@
+{% extends "layouts/base.html" %} {% block title %} Starting Page {% endblock
+title %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+<form method="GET" action="{{ url_for('all_individuals') }}">
+    <label for="search">Search by First Name:</label>
+    <input type="text" name="search" id="search" value="{{ search_term }}" placeholder="Search by First Name" />
+    <button type="submit">Search</button>
+</form>
+
+<table id="allIndividualsTable" class="table table-bordered table-striped">
+  <thead>
+    <tr>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Role</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- rows to be added here dynamically -->
+    {% for row in rows %}
+    <tr>
+      <td>{{ row['First_Name'] }}</td>
+      <td>{{ row['Last_Name'] }}</td>
+      <td>{{ row['Role'] }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock content %}
